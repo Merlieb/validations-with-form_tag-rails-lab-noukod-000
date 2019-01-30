@@ -1,29 +1,40 @@
-class PostsController < ApplicationController
-  before_action :set_post!, only: [:show, :edit, :update]
 
+class PostsController < ApplicationController
   def show
+    @post = Post.find(params[:id])
+  end
+
+  def new
+    @post = Post.new
+  end
+
+  def create
+    @post = Post.new(post_params)
+
+    if @post.save
+      redirect_to post_path(@post)
+    else
+      render :new
+    end
   end
 
   def edit
+    @post = Post.find(params[:id])
   end
 
   def update
-    @post.update(post_params)
-      if @post.valid?
-    redirect_to post_path(@post)
-  #  @post.save
-  else
-    render :edit
-  end
+    @post = Post.find(params[:id])
+
+    if @post.update(post_params)
+      redirect_to post_path(@post)
+    else
+      render :edit
+    end
   end
 
   private
 
   def post_params
-    params.permit(:category, :content, :title)
-  end
-
-  def set_post!
-    @post = Post.find(params[:id])
+    params.permit(:title, :category, :content)
   end
 end
